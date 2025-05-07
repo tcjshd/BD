@@ -1,3 +1,5 @@
+
+//Without Library 
 import numpy as np
 
 image = np.array([
@@ -54,3 +56,35 @@ bias = np.random.randn(2)
 
 fc_output = fully_connected(flattened, weights, bias)
 print("Final Output (FC Layer):\n", fc_output)
+
+
+//With Library 
+import numpy as np
+from keras.models import Sequential                          
+from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+
+image = np.array([
+    [1, 2, 3, 0, 1],
+    [0, 1, 2, 3, 1],
+    [1, 0, 2, 2, 0],
+    [2, 1, 0, 1, 2],
+    [0, 1, 3, 1, 0]
+])
+
+kernel = np.array([
+    [1, 0, -1],
+    [1, 0, -1],
+    [1, 0, -1]
+])
+
+model = Sequential([
+   Conv2D(filters=1, kernel_size=(3, 3), padding='valid', activation='linear', input_shape=(5, 5, 1), use_bias=False),
+   MaxPooling2D(pool_size=(2, 2)),
+   Flatten(),
+   Dense(units=1, activation='sigmoid')
+])
+model.layers[0].set_weights([kernel.reshape(3,3,1,1)])
+model.compile(optimizer='adam', loss='mean_squared_error')
+
+output = model.predict(image.reshape(1,5,5,1))
+print(f"The output value is {output}")
